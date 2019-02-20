@@ -1,0 +1,227 @@
+---
+title: "Big_Data_1"
+author: "Annika Engstrom"
+date: "2/15/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(readr)
+library(SDMTools)
+library(dplyr)
+library(sandwich)
+library(lmtest)
+
+atlas <- read_csv("atlas.csv")
+
+```
+Question 1.
+
+
+
+```{r}
+
+
+
+```
+Question 2.
+
+
+Question 3.
+``` {r echo = FALSE}
+#census tract 36061016900 is UWS New York, NY
+#36 state code
+#061 county code
+#016900 tract
+
+#weighted means for 25th percentile parents
+wt_mean_25 <- wt.mean(atlas$kfr_pooled_p25, atlas$count_pooled)
+wt_sd_25 <- wt.sd(atlas$kfr_pooled_p25,atlas$count_pooled)
+
+#filter for county
+county <- filter(atlas, state == 36, county == 061)
+
+#filter to Upper West Side, NY
+uws <- filter(atlas, state == 36, county == 061, tract == 016900)
+
+uws_wt_mean_25 <- wt.mean(uws$kfr_pooled_p25, uws$count_pooled)
+uws_wt_sd_25 <- wt.sd(uws$kfr_pooled_p25, uws$count_pooled)
+
+#filter to NY state
+ny <- filter(atlas, state == 36)
+
+ny_wt_mean_25 <- wt.mean(ny$kfr_pooled_p25, ny$count_pooled)
+ny_wt_sd_25 <- wt.sd(ny$kfr_pooled_p25, ny$count_pooled)
+
+```
+Question 5.
+```{r echo = FALSE}
+
+#weighted means for 75th percentile parents
+wt_mean_75 <- wt.mean(atlas$kfr_pooled_p75, atlas$count_pooled)
+wt_sd_75 <- wt.sd(atlas$kfr_pooled_p75,atlas$count_pooled)
+
+uws_wt_mean_75 <- wt.mean(uws$kfr_pooled_p75, uws$count_pooled)
+uws_wt_sd_75 <- wt.sd(uws$kfr_pooled_p75, uws$count_pooled)
+
+ny_wt_mean_75 <- wt.mean(ny$kfr_pooled_p75, ny$count_pooled)
+ny_wt_sd_75 <- wt.sd(ny$kfr_pooled_p75, ny$count_pooled)
+
+#weighted means for 100th percentile parents
+wt_mean_100 <- wt.mean(atlas$kfr_pooled_p100, atlas$count_pooled)
+wt_sd_100 <- wt.sd(atlas$kfr_pooled_p100,atlas$count_pooled)
+
+uws_wt_mean_100 <- wt.mean(uws$kfr_pooled_p100, uws$count_pooled)
+uws_wt_sd_100 <- wt.sd(uws$kfr_pooled_p100, uws$count_pooled)
+
+ny_wt_mean_100 <- wt.mean(ny$kfr_pooled_p100, ny$count_pooled)
+ny_wt_sd_100 <- wt.sd(ny$kfr_pooled_p100, ny$count_pooled)
+
+```
+Question 6.
+``` {r}
+
+mod1 <- lm(kfr_pooled_p75 ~ kfr_pooled_p25, data = county)
+summary(mod1)
+
+ggplot(data = county, aes(x = kfr_pooled_p25, y = kfr_pooled_p75)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  ggtitle("Graph to show relationship between income percentiles and achievement") +
+  xlab("25th Percentile") +
+  ylab("75th Percentile")
+
+```
+
+``` {r}
+#Calculating above statistics for only those of white race with parents in the 25th income percentile
+
+wt_mean_25_white <- wt.mean(atlas$kfr_white_p25, atlas$count_white)
+wt_sd_25_white <- wt.sd(atlas$kfr_white_p25,atlas$count_white)
+
+uws_wt_mean_25_white <- wt.mean(uws$kfr_white_p25, uws$count_white)
+uws_wt_sd_25_white <- wt.sd(uws$kfr_white_p25, uws$count_white)
+
+ny_wt_mean_25_white <- wt.mean(ny$kfr_white_p25, ny$count_white)
+ny_wt_sd_25_white <- wt.sd(ny$kfr_white_p25, ny$count_white)
+
+#Calculating above statistics for only those of white race with parents in the 75th income percentile
+
+wt_mean_75_white <- wt.mean(atlas$kfr_white_p75, atlas$count_white)
+wt_sd_75_white <- wt.sd(atlas$kfr_white_p75,atlas$count_white)
+
+uws_wt_mean_75_white <- wt.mean(uws$kfr_white_p75, uws$count_white)
+uws_wt_sd_75_white <- wt.sd(uws$kfr_white_p75, uws$count_white)
+
+ny_wt_mean_75_white <- wt.mean(ny$kfr_white_p75, ny$count_white)
+ny_wt_sd_75_white <- wt.sd(ny$kfr_white_p75, ny$count_white)
+
+mod1 <- lm(kfr_pooled_p75 ~ kfr_pooled_p25, data = county)
+summary(mod1)
+
+ggplot(data = county, aes(x = kfr_pooled_p25, y = kfr_pooled_p75)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  ggtitle("Graph to show relationship between income percentiles and achievement") +
+  xlab("25th Percentile") +
+  ylab("75th Percentile")
+
+```
+
+```{r}
+#Calculating above statistics for only those of black race with parents in the 25th income percentile
+
+wt_mean_25_black <- wt.mean(atlas$kfr_black_p25, atlas$count_black)
+wt_sd_25_black <- wt.sd(atlas$kfr_black_p25,atlas$count_black)
+
+uws_wt_mean_25_white <- wt.mean(uws$kfr_black_p25, uws$count_black)
+uws_wt_sd_25_white <- wt.sd(uws$kfr_black_p25, uws$count_black)
+
+ny_wt_mean_25_black <- wt.mean(ny$kfr_black_p25, ny$count_black)
+ny_wt_sd_25_black <- wt.sd(ny$kfr_black_p25, ny$count_black)
+
+#Calculating above statistics for only those of black race with parents in the 75th income percentile
+
+wt_mean_75_black <- wt.mean(atlas$kfr_black_p75, atlas$count_black)
+wt_sd_75_black <- wt.sd(atlas$kfr_black_p75,atlas$count_black)
+
+uws_wt_mean_75_black <- wt.mean(uws$kfr_black_p75, uws$count_black)
+uws_wt_sd_75_black <- wt.sd(uws$kfr_black_p75, uws$count_black)
+
+ny_wt_mean_75_black <- wt.mean(ny$kfr_black_p75, ny$count_black)
+ny_wt_sd_75_black <- wt.sd(ny$kfr_black_p75, ny$count_black)
+```
+
+```{r}
+#Calculating above statistics for only those of asian race with parents in the 25th income percentile
+
+wt_mean_25_asian <- wt.mean(atlas$kfr_asian_p25, atlas$count_asian)
+wt_sd_25_asian <- wt.sd(atlas$kfr_asian_p25,atlas$count_asian)
+
+uws_wt_mean_25_asian <- wt.mean(uws$kfr_asian_p25, uws$count_asian)
+uws_wt_sd_25_asian <- wt.sd(uws$kfr_asian_p25, uws$count_asian)
+
+ny_wt_mean_25_asian <- wt.mean(ny$kfr_asian_p25, ny$count_asian)
+ny_wt_sd_25_asian <- wt.sd(ny$kfr_asian_p25, ny$count_asian)
+
+#Calculating above statistics for only those of asian race with parents in the 75th income percentile
+
+wt_mean_75_asian <- wt.mean(atlas$kfr_asian_p75, atlas$count_asian)
+wt_sd_75_asian <- wt.sd(atlas$kfr_asian_p75,atlas$count_asian)
+
+uws_wt_mean_75_asian <- wt.mean(uws$kfr_asian_p75, uws$count_asian)
+uws_wt_sd_75_asian <- wt.sd(uws$kfr_asian_p75, uws$count_asian)
+
+ny_wt_mean_75_asian <- wt.mean(ny$kfr_asian_p75, ny$count_asian)
+ny_wt_sd_75_asian <- wt.sd(ny$kfr_asian_p75, ny$count_asian)
+
+```
+
+```{r}
+#Calculating above statistics for only those of hispanic race with parents in the 25th income percentile
+
+wt_mean_25_hisp <- wt.mean(atlas$kfr_hisp_p25, atlas$count_hisp)
+wt_sd_25_hisp <- wt.sd(atlas$kfr_hisp_p25,atlas$count_hisp)
+
+uws_wt_mean_25_hisp <- wt.mean(uws$kfr_hisp_p25, uws$count_hisp)
+uws_wt_sd_25_hisp <- wt.sd(uws$kfr_hisp_p25, uws$count_hisp)
+
+ny_wt_mean_25_hisp <- wt.mean(ny$kfr_hisp_p25, ny$count_hisp)
+ny_wt_sd_25_hisp <- wt.sd(ny$kfr_hisp_p25, ny$count_hisp)
+
+#Calculating above statistics for only those of hispanic race with parents in the 75th income percentile
+
+wt_mean_75_hisp <- wt.mean(atlas$kfr_hisp_p75, atlas$count_hisp)
+wt_sd_75_hisp <- wt.sd(atlas$kfr_hisp_p75,atlas$count_hisp)
+
+uws_wt_mean_75_hisp <- wt.mean(uws$kfr_hisp_p75, uws$count_hisp)
+uws_wt_sd_75_hisp <- wt.sd(uws$kfr_hisp_p75, uws$count_hisp)
+
+ny_wt_mean_75_hisp <- wt.mean(ny$kfr_hisp_p75, ny$count_hisp)
+ny_wt_sd_75_hisp <- wt.sd(ny$kfr_hisp_p75, ny$count_hisp)
+
+
+```
+
+```{r}
+
+#Calculating above statistics for only those of native american race with parents in the 75th income percentile
+
+wt_mean_75_natam <- wt.mean(atlas$kfr_natam_p75, atlas$count_natam)
+wt_sd_75_natam <- wt.sd(atlas$kfr_natam_p75,atlas$count_natam)
+
+uws_wt_mean_75_natam <- wt.mean(uws$kfr_natam_p75, uws$count_natam)
+uws_wt_sd_75_natam <- wt.sd(uws$kfr_natam_p75, uws$count_natam)
+
+ny_wt_mean_75_natam <- wt.mean(ny$kfr_natam_p75, ny$count_natam)
+ny_wt_sd_75_natam <- wt.sd(ny$kfr_natam_p75, ny$count_natam)
+
+```
+Question 8. 
+```{r}
+
+
+
+```
